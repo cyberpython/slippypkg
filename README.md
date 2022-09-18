@@ -29,12 +29,7 @@ Python 3.6+
 
 ## Installation
 
-Install the required dependencies using `pip` with the following command 
-(using a Python virtual environment is highly recommended):
-
-    pip install -r requirements.txt
-
-Then install using `pip` from Github (requires `git` installed on your system):
+Install using `pip` from Github (requires `git` installed on your system):
 
     pip install git+https://github.com/cyberpython/slippypkg.git
 
