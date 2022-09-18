@@ -54,10 +54,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+valid_tables = []
+
 
 @app.on_event("startup")
 async def database_connect():
     await database.connect()
+    rows = await database.fetch_all(query="SELECT table_name from gpkg_contents where data_type = 'tiles'")
+    for row in rows:
+        valid_tables.append(row["table_name"])
+    print(valid_tables)
 
 @app.on_event("shutdown")
 async def database_disconnect():
@@ -66,12 +72,14 @@ async def database_disconnect():
 @app.get("/{table}/{z}/{x}/{y}")
 async def fetch_data(table, z, x, y):
     try:
-        query = f"SELECT tile_data FROM '{table}' WHERE zoom_level = {int(z)} AND tile_column = {int(x)} and tile_row = {int(y)}"
-        row = await database.fetch_one(query=query)
-        if row is None:
-            return Response(status_code=404)
-        else:
-            return Response(content=row["tile_data"], media_type="image/png")
+        if table in valid_tables:
+            query = f'SELECT tile_data FROM "{table}" WHERE zoom_level = :z AND tile_column = :x and tile_row = :y'
+            values={"z": int(z), "x": int(x), "y": int(y)}
+            row = await database.fetch_one(query=query, values=values)
+            if row is None:
+                return Response(status_code=404)
+            else:
+                return Response(content=row["tile_data"], media_type="image/png")
     except:
         return Response(status_code=500)
 

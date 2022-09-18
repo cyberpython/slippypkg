@@ -29,9 +29,10 @@ Python 3.6+
 
 ## Installation
 
-Install using `pip` from Github (requires `git` installed on your system):
+Install using `pip` from Github (requires `git` installed on your system, using 
+a Python virtual environment is highly recommended):
 
-    pip install git+https://github.com/cyberpython/slippypkg.git
+    python -m pip install git+https://github.com/cyberpython/slippypkg.git
 
 ## Execution
 
